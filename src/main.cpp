@@ -49,6 +49,44 @@ void mirror(sil::Image& image){
     }
 }
 
+void neg(sil::Image& image){
+    sil::Image copy = image;
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            image.pixel(x,y) = 1.0f - copy.pixel(x,y);
+        }
+    }
+}
+
+
+void switch_channels(sil::Image& image){
+    sil::Image copy = image;
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            image.pixel(x,y).r =copy.pixel(x,y).g;
+            image.pixel(x,y).g =copy.pixel(x,y).r;
+
+        }
+    }
+}
+
+void degraded(sil::Image& image){
+    sil::Image copy = image;
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            float t = static_cast<float>(x) / (image.width() - 1);
+            image.pixel(x,y) = {t, t, t};
+
+        }
+    }
+}
+
 int main()
 {
     { 
@@ -74,5 +112,22 @@ int main()
     mirror(image);
     image.save("output/mirror_logo.png");
     }
-    
+
+    {
+    sil::Image image{"images/logo.png"};
+    neg(image);
+    image.save("output/neg_logo.png");
+    }
+
+    {
+    sil::Image image{"images/logo.png"};
+    switch_channels(image);
+    image.save("output/switch_channels_logo.png");
+    }
+
+    {
+    sil::Image image{300,200};
+    degraded(image);
+    image.save("output/degraded_logo.png");
+    }
 }
