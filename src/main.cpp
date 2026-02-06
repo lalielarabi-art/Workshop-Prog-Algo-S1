@@ -167,6 +167,111 @@ void brightness1(sil::Image& image){ //assombrissement avec puissance 2
     }
 }
 
+void disk(sil::Image& image){ 
+
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            if ((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2)<=50*50){
+                image.pixel(x,y) = {1.0f, 1.0f, 1.0f};  
+            }
+        }
+    }
+}
+
+void circle(sil::Image& image){ 
+    int thickness=5;
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            if ((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2)<=50*50 and (x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2)>=(50-thickness)*(50-thickness)){
+                image.pixel(x,y) = {1.0f, 1.0f, 1.0f};  
+            }
+        }
+    }
+}
+
+void rosace(sil::Image& image){ 
+    int thickness=5;
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            if ((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2)<=50*50 and (x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2)>=(50-thickness)*(50-thickness)){
+                image.pixel(x,y) = {1.0f, 1.0f, 1.0f};  
+            }
+           for (int k=0; k<6; ++k){
+
+            float angle=k*M_PI/3.0f;
+
+            float center_x=50*cos(angle)+image.width()/2;
+            float center_y=50*sin(angle)+image.height()/2;
+
+            if ((x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)<=50*50 and (x-center_x)*(x-center_x)+(y-center_y)*(y-center_y)>=(50-thickness)*(50-thickness)){
+                image.pixel(x,y) = {1.0f, 1.0f, 1.0f};}
+           }        
+        }
+    }
+}
+
+void glitch(sil::Image& image){ 
+
+    for(int i = 0; i < 100; ++i){
+
+        int w = random_int(2, 30);
+        int h = random_int(2, 10);
+
+        int x1 = random_int(0, image.width() - w - 1);
+        int y1 = random_int(0, image.height() - h - 1);
+        int x2 = random_int(0, image.width() - w - 1);
+        int y2 = random_int(0, image.height() - h - 1);
+
+        for (int y = 0; y < h; ++y)
+        {
+            for (int x = 0; x < w; ++x)
+            {
+                image.pixel(x1 + x, y1 + y) = image.pixel(x2 + x, y2 + y);
+            }
+        }
+    }
+}
+
+void mosaic(sil::Image& image, sil::Image& result){ 
+
+    for (int y = 0; y < result.height(); ++y)
+    {
+        for (int x = 0; x < result.width(); ++x)
+        {
+            int rx = x % image.width();
+            int ry = y % image.height();
+
+            result.pixel(x, y) = image.pixel(rx, ry);
+        }
+    }
+}
+
+void mirror(sil::Image& image, sil::Image& result)
+{
+    for (int y = 0; y < result.height(); ++y)
+    {
+        for (int x = 0; x < result.width(); ++x)
+        {
+            int rx = x % image.width();
+            int ry = y % image.height();
+
+            if ((x / image.width()) % 2 == 1)
+                rx = image.width() - 1 - rx;
+
+            if ((y / image.height()) % 2 == 1)
+                ry = image.height() - 1 - ry;
+
+            result.pixel(x, y) = image.pixel(rx, ry);
+        }
+    }
+}
+
 int main()
 {
     { 
@@ -240,4 +345,43 @@ int main()
     brightness1(image);
     image.save("output/brightness1_photo.jpg");
     }
+
+    {
+    sil::Image image{500,500};
+    disk(image);
+    image.save("output/disk_photo.jpg");
+    }
+
+    {
+    sil::Image image{500,500};
+    circle(image);
+    image.save("output/circle_photo.jpg");
+    }
+
+    {
+    sil::Image image{500,500};
+    rosace(image);
+    image.save("output/rosace_photo.jpg");
+    }
+
+    {
+    sil::Image image{"images/logo.png"};
+    glitch(image);
+    image.save("output/glitch_logo.png");
+    }
+
+    {
+    sil::Image image{"images/logo.png"};
+    sil::Image result{image.width()*10, image.height()*10};
+    mosaic(image, result);
+    result.save("output/mosaic_logo.png");
+    }
+
+    {
+    sil::Image image{"images/logo.png"};
+    sil::Image result{image.width()*5, image.height()*5};
+    mirror(image, result);
+    result.save("output/mirror_logo.png");
+    }
+
 }
