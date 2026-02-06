@@ -252,7 +252,7 @@ void mosaic(sil::Image& image, sil::Image& result){
     }
 }
 
-void mirror(sil::Image& image, sil::Image& result)
+void mosaic_mirror(sil::Image& image, sil::Image& result)
 {
     for (int y = 0; y < result.height(); ++y)
     {
@@ -380,8 +380,8 @@ int main()
     {
     sil::Image image{"images/logo.png"};
     sil::Image result{image.width()*5, image.height()*5};
-    mirror(image, result);
-    result.save("output/mirror_logo.png");
+    mosaic_mirror(image, result);
+    result.save("output/mosaic_mirror_logo.png");
     }
 
 }
