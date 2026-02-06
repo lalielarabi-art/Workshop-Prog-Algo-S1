@@ -1,6 +1,6 @@
 # 🐣 S1 | Prog: Workshop
 
----
+
 
 ## ⭐️ Ne garder que le vert
 <img src="images/logo.png" width="250"/> <img src="output/green_logo.png" width="250"/>
